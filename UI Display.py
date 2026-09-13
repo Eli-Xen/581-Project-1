@@ -27,10 +27,12 @@ for i in range(12):
     # add the sprite to the list of sprites
     sprites.append(sprite)
 
+# displays board
 def showBoard(surface):
     for row in range(10):
         for col in range(10):
-            surface.blit(sprites[0], (col * squares, row * squares))
+            # draw sprite onto surface at given position
+            surface.blit(sprites[0], (col * squares, row * squares)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
 
 # loop to run game
 running = True
@@ -40,6 +42,18 @@ while running:
         # ends program if user clicks X
         if event.type == pygame.QUIT:
             running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # get mouse position
+            pos = pygame.mouse.get_pos()
+            # find board square that was clicked
+            col = pos[0] // squares
+            row = pos[1] // squares
+            if event.button == 1: # left click
+                print(f"left click : {row}, {col}") # TODO: add logic
+            if event.button == 3: # right click
+                print(f"right click : {row}, {col}") # TODO: add logic
+        
     # display and update board
     showBoard(screen)
     pygame.display.flip()
