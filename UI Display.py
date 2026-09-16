@@ -6,6 +6,7 @@
 # author: Emilia Davis
 
 import pygame
+from minesweeper import Minesweeper
 
 pygame.init()
 
@@ -51,6 +52,20 @@ def showBoard(surface):
 
 # loop to run game
 running = True
+board = Minesweeper()   #creates Minesweeper object
+# nearly identical for loop to the one under while running
+for event in pygame.event.get():      
+    # ends program if user clicks X
+    if event.type == pygame.QUIT:
+        running = False
+    # separate left click check for initial board creation    
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        col, row = pygame.mouse.get_pos()
+
+        if event.button == 1:
+            print(f"left click : {row}, {col}")
+            board.createBoard(row, col) # constructs board object according to clicked space
+            
 while running:
     # checks for events such as clicks
     for event in pygame.event.get():
