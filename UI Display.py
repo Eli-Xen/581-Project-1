@@ -48,8 +48,8 @@ def showBoard(surface):
 
     # create labels for columns A - J
     for col in range(10):
-            label = font.render(chr(ord('A') + col), False, (255, 255, 255)) # labels A-J, no anti-aliasing, white color
-            surface.blit(label, (col * square_size * board_scale + label_size * board_scale, 0))
+        label = font.render(chr(ord('A') + col), False, (255, 255, 255)) # labels A-J, no anti-aliasing, white color
+        surface.blit(label, (col * square_size * board_scale + label_size * board_scale, 0)) 
 
 # loop to run game
 running = True
@@ -66,7 +66,8 @@ for event in pygame.event.get():
         if event.button == 1:
             print(f"left click : {row}, {col}")
             board.createBoard(row, col) # constructs board object according to clicked space #create board takes position bvt what does get_pos() ret? 
-            
+
+win = False
 while running:
     # checks for events such as clicks
     for event in pygame.event.get():
@@ -94,7 +95,8 @@ while running:
                         if board.chord(row, col) == 0:
                             running = False
                     
-                if board.status()==True: 
+                if board.status()==True:
+                    win = True
                     running=False #won game!!! 
                 #elif board.dig(row,col)==2: 
                 #    pass
@@ -109,3 +111,19 @@ while running:
     # display and update board
     showBoard(screen)
     pygame.display.flip()
+
+running = True
+while running: # loop to run end screen
+    for event in pygame.event.get(): # i copied this from above :3
+        # ends program if user clicks X
+        if event.type == pygame.QUIT:
+            running = False
+    # display end screen
+    screen.fill((0, 0, 0)) # fill screen with black
+    if win:
+        text = font.render("You win. :)", False, (255, 255, 255)) # show win text
+    else:
+        text = font.render("You lose. :(", False, (255, 255, 255)) # show lose text
+    screen.blit(text, ((board_size + label_size) * board_scale // 2 - text.get_width() // 2, (board_size + label_size) * board_scale // 2 - text.get_height() // 2)) # center text
+    pygame.display.flip() # update display
+    
