@@ -14,9 +14,11 @@ def show():
             if out_ch == -3:
                 line_str.append(" ")
             elif out_ch == -2:
-                line_str.append("?")
+                line_str.append("0")
             elif out_ch == -1:
                 line_str.append("X")
+            elif out_ch == 0:
+                line_str.append("?")
             else:
                 line_str.append(str(out_ch))
         print(line_str)

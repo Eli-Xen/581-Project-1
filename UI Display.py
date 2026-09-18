@@ -38,31 +38,10 @@ def showBoard(surface):
     for row in range(10):
         for col in range(10):
             # draw sprite onto surface at given position
-            if board.display(row, col)==-3: #eliza m added logic for what sprites to show depending on the board.display function -2,-1,0,n
-                surface.blit(sprites[0], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==-2: #shows flag 
-                surface.blit(sprites[3], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==-1: #shows mine >:) mwehehehe  
-                surface.blit(sprites[2], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==0: #shows cell digit=0 
-                surface.blit(sprites[1], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==1: #shows cell digit=1 spite 4 
-                surface.blit(sprites[4], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==2: #shows cell digit=2 spite 5 
-                    surface.blit(sprites[5], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==3: #shows cell digit=3 spite 6 
-                    surface.blit(sprites[6], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==4: #shows cell digit=4 spite 7 
-                    surface.blit(sprites[7], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==5: #shows cell digit=5 spite 8
-                    surface.blit(sprites[8], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==6: #shows cell digit=6 spite 9
-                    surface.blit(sprites[9], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==7: #shows cell digit=7 spite 10
-                    surface.blit(sprites[10], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-            elif board.display(row, col)==8: #shows cell digit=8 spite 11 
-                    surface.blit(sprites[11], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale)) # TODO: right now this just draws the covered sprite for every position, needs logic to determine what sprite to use
-
+            #print(row, col)
+            tile = board.display(row, col)
+            surface.blit(sprites[tile + 3], (col * square_size * board_scale + label_size * board_scale, row * square_size * board_scale + label_size * board_scale))
+                    
     for row in range(10):
         label = font.render(str(row + 1), False, (255, 255, 255)) # labels 1-10, no anti-aliasing, white color
         surface.blit(label, (0, row * square_size * board_scale + label_size * board_scale)) # 
@@ -104,6 +83,8 @@ while running:
             #col = pos[0] // (square_size * board_scale)
             #row = pos[1] // (square_size * board_scale)
             if event.button == 1: # left click
+                if board.is_constructed == False:
+                    board.createBoard(row,col)
                 if board.dig(row,col)==0: #eliza m added this section; i think this is rite? 
                     running=False #HAHA LOZER 
                 elif board.status()==True: 

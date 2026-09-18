@@ -10,6 +10,7 @@ class Minesweeper:
         self.m = mines #determines how many mines are placed on board, default is 15
         self.flags = 0 #keeps tracked of how many flags are currently placed, may be used later to enforce a max flags
         self._digs = 100 - mines #used to determine if the player has won
+        self.is_constructed = False
         self._internal = [[0 for i in range(10)] for j in range(10)]
         self._external = [[0 for i in range(10)] for j in range(10)]
 
@@ -29,6 +30,7 @@ class Minesweeper:
                         if self._internal[i][j] != -1:
                             self._internal[i][j] += 1
                 c += 1
+        self.is_constructed = True
         self.dig(s_row, s_col)
 
     #method called when player digs (left click) 
@@ -70,20 +72,28 @@ class Minesweeper:
 
     #method called to determine sprite used for specific cell
     #returns -3 if cell is still covered (sprites[0])
-    #returns -2 if cell is a flag (sprites[3])
+    #returns -2 if cell is a zero (sprites[1])
     #returns -1 if cell is a mine (sprites[2])
-    #returns 0 if cell is 0 (sprite[1])
+    #returns 0 if cell is flag (sprite[3])
     #returns 1-8 if cell is 1-8 (sprites[4] - sprites[11])
     #parameters are the row and column the sprite is for
     def display(self, row, col):
         cell = self._external[row][col]
         if cell == 2:
-            return -2 #flag
+            #print(0)
+            return 0 #flag
         elif cell == 1:
             if self._internal[row][col] == -1:
+                #print(-1)
                 return -1 #mine
-            else: return self._internal[row][col]
+            elif self._internal[row][col] == 0: 
+                #print(-2)
+                return -2 #zero
+            else:
+                #print(self._internal[row][col])
+                return self._internal[row][col]
         else: #cell == 0
+            #print(-3)
             return -3 #covered
 
     #method to check if game is complete (player wins)
