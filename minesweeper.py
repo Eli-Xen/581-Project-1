@@ -85,6 +85,8 @@ class Minesweeper:
         for r in range(row - 1, row + 2):
             for c in range(col - 1, col + 2):
                 # Use try statement so we can ignore checking for indexes
+                if r < 0 or c < 0:
+                    continue
                 try:
                     if self.display(r, c) == 0:
                         flagCount += 1
