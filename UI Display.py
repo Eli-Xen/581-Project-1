@@ -7,7 +7,6 @@
 
 import pygame
 from minesweeper import Minesweeper
-from time import sleep
 
 pygame.init()
 
