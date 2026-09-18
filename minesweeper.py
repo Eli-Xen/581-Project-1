@@ -70,6 +70,48 @@ class Minesweeper:
             self.flags += 1
             return 0
 
+    # Chord function, common in most minesweeper games.
+    # Returns 2 - Does nothing if the number does not match the number of adjacent flags
+    # Returns 1 - Progress was made
+    # Returns 0 - The player lost
+    def chord(self, row, col):
+        # First, check if we are dealing with a revealed tile
+        # If not, this function should do nothing
+        displayVal = self.display(row, col)
+        if displayVal <= 0:
+            return 2
+        # Check if number of flags matches number of adjacent positions
+        flagCount = 0
+        for r in range(row - 1, row + 2):
+            for c in range(col - 1, col + 2):
+                # Use try statement so we can ignore checking for indexes
+                try:
+                    if self.display(r, c) == 0:
+                        flagCount += 1
+                except IndexError:
+                    # Do nothing; no need to check this out-of-bounds cell
+                    pass
+        # If chord values do not match, do nothing.
+        if flagCount != displayVal:
+            return 2
+        # Dig all adjacent tiles
+        toReturn = 1
+        for r in range(row - 1, row + 2):
+            for c in range(col - 1, col + 2):
+                # Use try statement so we can ignore checking for indexes
+                try:
+                    # To deal with negative indexing.
+                    # A useful feature, just not here.
+                    if r < 0 or c < 0:
+                        continue
+                    if self.display(r, c) == -3:
+                        toReturn = 1 if self.dig(r, c) > 0 and toReturn == 1 else 0
+                except IndexError:
+                    # Do nothing; no need to check this out-of-bounds cell
+                    pass
+        return toReturn
+        
+
     #method called to determine sprite used for specific cell
     #returns -3 if cell is still covered (sprites[0])
     #returns -2 if cell is a zero (sprites[1])

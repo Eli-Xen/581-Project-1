@@ -7,6 +7,7 @@
 
 import pygame
 from minesweeper import Minesweeper
+from time import sleep
 
 pygame.init()
 
@@ -85,9 +86,16 @@ while running:
             if event.button == 1: # left click
                 if board.is_constructed == False:
                     board.createBoard(row,col)
-                if board.dig(row,col)==0: #eliza m added this section; i think this is rite? 
-                    running=False #HAHA LOZER 
-                elif board.status()==True: 
+                #eliza m added this section; i think this is rite? 
+                # Ryan G. modified this.
+                match board.dig(row, col):
+                    case 0:
+                        running=False #HAHA LOZER
+                    case 2:
+                        if board.chord(row, col) == 0:
+                            running = False
+                    
+                if board.status()==True: 
                     running=False #won game!!! 
                 #elif board.dig(row,col)==2: 
                 #    pass
