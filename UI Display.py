@@ -51,9 +51,42 @@ def showBoard(surface):
         label = font.render(chr(ord('A') + col), False, (255, 255, 255)) # labels A-J, no anti-aliasing, white color
         surface.blit(label, (col * square_size * board_scale + label_size * board_scale, 0)) 
 
-# loop to run game
 running = True
-board = Minesweeper()   #creates Minesweeper object
+menu_running = True
+mines = ""
+is_valid = True
+while menu_running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            is_valid = True
+            if event.key == pygame.K_RETURN:
+                try:
+                    m = int(mines)
+                    if 10 <= m <= 20:
+                        menu_running = False
+                    else:
+                        raise ValueError
+                except ValueError:
+                    is_valid = False
+            elif event.key == pygame.K_BACKSPACE:
+                if mines: #checks if string is empty
+                    mines = mines[:-1]
+            elif event.unicode.isdigit():
+                mines += event.unicode
+
+    screen.fill((0, 0, 0))
+    if is_valid:
+        text = font.render("Enter Number of Mines (10-20): " + mines, False, (255, 255, 255))
+    else:
+        text = font.render("Enter Number of Mines (10-20): " + mines + "\nEnter a Valid Value", False, (255, 255, 255))
+    screen.blit(text, ((board_size + label_size) * board_scale // 2 - text.get_width() // 2, (board_size + label_size) * board_scale // 2 - text.get_height() // 2))
+    pygame.display.flip()
+
+
+# loop to run game
+board = Minesweeper(m)   #creates Minesweeper object
 # nearly identical for loop to the one under while running
 for event in pygame.event.get():      
     # ends program if user clicks X
@@ -61,11 +94,11 @@ for event in pygame.event.get():
         running = False
     # separate left click check for initial board creation    
     if event.type == pygame.MOUSEBUTTONDOWN:
-        col, row = pygame.mouse.get_pos() #is this by sprite or what d0es this return?? 
+        col, row = pygame.mouse.get_pos() 
 
         if event.button == 1:
             print(f"left click : {row}, {col}")
-            board.createBoard(row, col) # constructs board object according to clicked space #create board takes position bvt what does get_pos() ret? 
+            board.createBoard(row, col) # constructs board object according to clicked space
 
 win = False
 while running:
@@ -86,7 +119,7 @@ while running:
             if event.button == 1: # left click
                 if board.is_constructed == False:
                     board.createBoard(row,col)
-                #eliza m added this section; i think this is rite? 
+                #eliza m added this section
                 # Ryan G. modified this.
                 match board.dig(row, col):
                     case 0:
@@ -102,11 +135,10 @@ while running:
                 #    pass
                 #elif board.dig(row,col)==1: 
                     #
-                #print(f"left click : {row}, {col}") # TODO: add logic
+                #print(f"left click : {row}, {col}") 
             if event.button == 3: # right click
-                board.flag(row, col) #eliza m added this line; i think this is rite? 
-                #i th1nk i need 
-                #print(f"right click : {row}, {col}") # TODO: add logic
+                board.flag(row, col) #eliza m added this line
+                #print(f"right click : {row}, {col}") 
         
     # display and update board
     showBoard(screen)
