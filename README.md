@@ -1,9 +1,5 @@
 # 581-Project-1: Minesweeper
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
-![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5-green)
-![Course](https://img.shields.io/badge/EECS-581-crimson)
-
 A single-player Minesweeper game built in Python with **pygame** for **EECS 581** at the **University of Kansas**.
 
 The player uncovers cells on a 10×10 grid, using the numbers to figure out where the mines are, and flags cells they think hide a mine. **Uncover every safe cell to win. Uncover a mine and you lose.**
