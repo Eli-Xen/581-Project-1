@@ -51,42 +51,45 @@ def showBoard(surface):
         label = font.render(chr(ord('A') + col), False, (255, 255, 255)) # labels A-J, no anti-aliasing, white color
         surface.blit(label, (col * square_size * board_scale + label_size * board_scale, 0)) 
 
-running = True
-menu_running = True
-mines = ""
-is_valid = True
-while menu_running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            is_valid = True
-            if event.key == pygame.K_RETURN:
-                try:
-                    m = int(mines)
-                    if 10 <= m <= 20:
-                        menu_running = False
-                    else:
-                        raise ValueError
-                except ValueError:
-                    is_valid = False
-            elif event.key == pygame.K_BACKSPACE:
-                if mines: #checks if string is empty
-                    mines = mines[:-1]
-            elif event.unicode.isdigit():
-                mines += event.unicode
+def DoSetup():
+    running = True
+    menu_running = True
+    mines = ""
+    is_valid = True
+    m = None
+    while menu_running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                is_valid = True
+                if event.key == pygame.K_RETURN:
+                    try:
+                        m = int(mines)
+                        if 10 <= m <= 20:
+                            menu_running = False
+                        else:
+                            raise ValueError
+                    except ValueError:
+                        is_valid = False
+                elif event.key == pygame.K_BACKSPACE:
+                    if mines: #checks if string is empty
+                        mines = mines[:-1]
+                elif event.unicode.isdigit():
+                    mines += event.unicode
 
-    screen.fill((0, 0, 0))
-    if is_valid:
-        text = font.render("Enter Number of Mines (10-20): " + mines, False, (255, 255, 255))
-    else:
-        text = font.render("Enter Number of Mines (10-20): " + mines + "\nEnter a Valid Value", False, (255, 255, 255))
-    screen.blit(text, ((board_size + label_size) * board_scale // 2 - text.get_width() // 2, (board_size + label_size) * board_scale // 2 - text.get_height() // 2))
-    pygame.display.flip()
+        screen.fill((0, 0, 0))
+        if is_valid:
+            text = font.render("Enter Number of Mines (10-20): " + mines, False, (255, 255, 255))
+        else:
+            text = font.render("Enter Number of Mines (10-20): " + mines + " | Enter a Valid Value", False, (255, 255, 255))
+        screen.blit(text, ((board_size + label_size) * board_scale // 2 - text.get_width() // 2, (board_size + label_size) * board_scale // 2 - text.get_height() // 2))
+        pygame.display.flip()
+    return m
 
 
 # loop to run game
-board = Minesweeper(m)   #creates Minesweeper object
+#board = Minesweeper(m)   #creates Minesweeper object
 # nearly identical for loop to the one under while running
 for event in pygame.event.get():      
     # ends program if user clicks X
@@ -100,62 +103,82 @@ for event in pygame.event.get():
             print(f"left click : {row}, {col}")
             board.createBoard(row, col) # constructs board object according to clicked space
 
-win = False
-while running:
-    # checks for events such as clicks
-    for event in pygame.event.get():
-        # ends program if user clicks X
-        if event.type == pygame.QUIT:
-            running = False
+def MainGameplay():
+    win = False
+    running = True
+    while running:
+        # checks for events such as clicks
+        for event in pygame.event.get():
+            # ends program if user clicks X
+            if event.type == pygame.QUIT:
+                running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # get mouse position
-            pos = pygame.mouse.get_pos()
-            # find board square that was clicked
-            col = (pos[0] - label_size * board_scale) // (square_size * board_scale) #adjustments for pixels 
-            row = (pos[1] - label_size * board_scale) // (square_size * board_scale) #adjustments for pixels 
-            #col = pos[0] // (square_size * board_scale)
-            #row = pos[1] // (square_size * board_scale)
-            if event.button == 1: # left click
-                if board.is_constructed == False:
-                    board.createBoard(row,col)
-                #eliza m added this section
-                # Ryan G. modified this.
-                match board.dig(row, col):
-                    case 0:
-                        running=False #HAHA LOZER
-                    case 2:
-                        if board.chord(row, col) == 0:
-                            running = False
-                    
-                if board.status()==True:
-                    win = True
-                    running=False #won game!!! 
-                #elif board.dig(row,col)==2: 
-                #    pass
-                #elif board.dig(row,col)==1: 
-                    #
-                #print(f"left click : {row}, {col}") 
-            if event.button == 3: # right click
-                board.flag(row, col) #eliza m added this line
-                #print(f"right click : {row}, {col}") 
-        
-    # display and update board
-    showBoard(screen)
-    pygame.display.flip()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # get mouse position
+                pos = pygame.mouse.get_pos()
+                # find board square that was clicked
+                col = (pos[0] - label_size * board_scale) // (square_size * board_scale) #adjustments for pixels
+                row = (pos[1] - label_size * board_scale) // (square_size * board_scale) #adjustments for pixels
+                if col < 0 or row < 0:
+                    continue
+                #col = pos[0] // (square_size * board_scale)
+                #row = pos[1] // (square_size * board_scale)
+                if event.button == 1: # left click
+                    if board.is_constructed == False:
+                        board.createBoard(row,col)
+                    #eliza m added this section
+                    # Ryan G. modified this.
+                    match board.dig(row, col):
+                        case 0:
+                            running=False #HAHA LOZER
+                        case 2:
+                            if board.chord(row, col) == 0:
+                                running = False
 
-running = True
-while running: # loop to run end screen
-    for event in pygame.event.get(): # i copied this from above :3
-        # ends program if user clicks X
-        if event.type == pygame.QUIT:
-            running = False
-    # display end screen
-    screen.fill((0, 0, 0)) # fill screen with black
-    if win:
-        text = font.render("You win. :)", False, (255, 255, 255)) # show win text
-    else:
-        text = font.render("You lose. :(", False, (255, 255, 255)) # show lose text
-    screen.blit(text, ((board_size + label_size) * board_scale // 2 - text.get_width() // 2, (board_size + label_size) * board_scale // 2 - text.get_height() // 2)) # center text
-    pygame.display.flip() # update display
-    
+                    if board.status()==True:
+                        win = True
+                        running=False #won game!!!
+                    #elif board.dig(row,col)==2:
+                    #    pass
+                    #elif board.dig(row,col)==1:
+                        #
+                    #print(f"left click : {row}, {col}")
+                if event.button == 3: # right click
+                    board.flag(row, col) #eliza m added this line
+                    #print(f"right click : {row}, {col}")
+
+        # display and update board
+        showBoard(screen)
+        pygame.display.flip()
+    return win
+
+def EndScreen(win):
+    running = True
+    shouldContinue = False
+    while running: # loop to run end screen
+        for event in pygame.event.get(): # i copied this from above :3
+            # ends program if user clicks X
+            if event.type == pygame.QUIT:
+                running = False
+                shouldContinue = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                shouldContinue = True
+                running = False
+        # display end screen
+        screen.fill((0, 0, 0)) # fill screen with black
+        if win:
+            text = font.render("You win. :) | Press enter to play again.", False, (255, 255, 255)) # show win text
+        else:
+            text = font.render("You lose. :( | Press enter to play again.", False, (255, 255, 255)) # show lose text
+        screen.blit(text, ((board_size + label_size) * board_scale // 2 - text.get_width() // 2, (board_size + label_size) * board_scale // 2 - text.get_height() // 2)) # center text
+        pygame.display.flip() # update display
+    return shouldContinue
+
+
+# Loop to run the game
+while True:
+    mines = DoSetup()
+    board = Minesweeper(mines)
+    win = MainGameplay()
+    if not EndScreen(win):
+        break
